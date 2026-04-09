@@ -7,7 +7,7 @@ const EMPTY_FORM = {
   gpa: "",
 };
 
-function AddStudentForm() {
+function AddStudentForm({ onAddStudent }) {
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
 
