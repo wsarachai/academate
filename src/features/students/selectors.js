@@ -1,4 +1,6 @@
 // src/features/students/selectors.js
+import { createSelector } from "@reduxjs/toolkit";
+
 // ── Basic selectors ───────────────────────────────────────
 // Select the full list of students from the store
 export const selectAllStudents = (state) => state.student.list;
@@ -20,5 +22,7 @@ export const selectStudentById = (id) => (state) =>
   state.student.list.find((s) => s.id === id);
 
 // Count students above a GPA threshold
-export const selectHighAchievers = (state) =>
-  state.student.list.filter((s) => s.gpa >= 3.5);
+export const selectHighAchievers = createSelector(
+  [selectAllStudents],
+  (list) => list.filter((s) => s.gpa >= 3.5),
+);
