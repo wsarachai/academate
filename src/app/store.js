@@ -5,7 +5,7 @@ import { gradesReducer } from "../features/grades/gradesSlide";
 
 export const store = configureStore({
   reducer: {
-    student: studentReducer,
+    students: studentReducer,
     courses: coursesReducer,
     grades: gradesReducer,
   },

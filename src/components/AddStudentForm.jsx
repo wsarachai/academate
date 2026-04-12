@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addStudent } from "../features/students/studentSlice";
+import { addStudentAsync } from '../features/students/studentsThunks';
+
 
 const EMPTY_FORM = {
   name: "",
@@ -44,8 +45,7 @@ function AddStudentForm({ onAddStudent }) {
     }
 
     dispatch(
-      addStudent({
-        id: Date.now(), // Temporary ID — Session 4 uses API-generated IDs
+      addStudentAsync({
         ...formData,
         gpa: gpaNum,
       }),
