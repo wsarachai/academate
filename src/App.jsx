@@ -1,7 +1,8 @@
 import "./App.css";
 import GpaSummary from "./components/GpaSummary.jsx";
 import AddStudentForm from "./components/AddStudentForm.jsx";
-import StudentTable from "./components/StudentTable.jsx";
+import StudentDashboard from "./components/StudentDashboard.jsx";
+import PaginatedStudents from "./components/PaginatedStudents.jsx";
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
       <main className="app-main">
         <GpaSummary />
         <AddStudentForm />
-        <StudentTable />
+        <StudentDashboard />
       </main>
     </div>
   );

@@ -1,20 +1,12 @@
 import { useState } from "react";
 import {
   useDeleteStudentMutation,
-  useGetStudentsQuery,
   useUpdateStudentMutation,
 } from "../features/students/studentApi";
 import EditModal from "./EditModal";
 import StudentRow from "./StudentRow";
 
-function StudentTable() {
-  const {
-    data: students = [],
-    isLoading,
-    isError,
-    error,
-    refetch,
-  } = useGetStudentsQuery();
+function StudentTable({ students, offset = 0 }) {
   const [deleteStudent] = useDeleteStudentMutation();
   const [updateStudent] = useUpdateStudentMutation();
 
@@ -30,19 +22,6 @@ function StudentTable() {
     await updateStudent({ ...student, gpa: parseFloat(student.gpa) || 0 });
     setEditing(null);
   };
-
-  if (isLoading) {
-    return <div className="spinner">Loading…</div>;
-  }
-
-  if (isError) {
-    return (
-      <div className="error-banner">
-        <p>Error: {error?.status || "Failed to fetch students"}</p>
-        <button onClick={refetch}>Retry</button>
-      </div>
-    );
-  }
 
   if (!students || students.length === 0) {
     return <p>No students found. Add one to the list.</p>;
@@ -66,7 +45,7 @@ function StudentTable() {
             <StudentRow
               key={student.id}
               student={student}
-              index={index}
+              index={offset + index}
               setEditing={setEditing}
               handleDelete={handleDelete}
             />
