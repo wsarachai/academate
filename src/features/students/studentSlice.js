@@ -1,13 +1,24 @@
-import { createSlice, isPending } from "@reduxjs/toolkit";
-import { fetchStudents, addStudentAsync, updateStudentAsync, deleteStudentAsync } from "./studentsThunks";
+import { createSlice, createEntityAdapter, isPending } from "@reduxjs/toolkit";
+import {
+  fetchStudents,
+  addStudentAsync,
+  updateStudentAsync,
+  deleteStudentAsync,
+} from "./studentsThunks";
+
+const studentAdapter = createEntityAdapter({
+  selectId: (student) => student.id,
+  sortComparer: (a, b) => a.name.localeCompare(b.name),
+});
+
+const initialState = studentAdapter.getInitialState({
+  status: "idle",
+  error: null,
+});
 
 const studentSlice = createSlice({
   name: "students",
-  initialState: {
-    list: [],
-    status: "idle",
-    error: null,
-  },
+  initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -17,7 +28,7 @@ const studentSlice = createSlice({
       })
       .addCase(fetchStudents.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.list = action.payload;
+        studentAdapter.setAll(state, action.payload);
       })
       .addCase(fetchStudents.rejected, (state, action) => {
         state.status = "failed";
@@ -25,7 +36,7 @@ const studentSlice = createSlice({
       })
       .addCase(addStudentAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.list.push(action.payload);
+        studentAdapter.addOne(state, action.payload);
       })
       .addCase(addStudentAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -33,10 +44,7 @@ const studentSlice = createSlice({
       })
       .addCase(updateStudentAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        const index = state.list.findIndex((s) => s.id === action.payload.id);
-        if (index !== -1) {
-          state.list[index] = action.payload;
-        }
+        studentAdapter.upsertOne(state, action.payload);
       })
       .addCase(updateStudentAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -44,28 +52,36 @@ const studentSlice = createSlice({
       })
       .addCase(deleteStudentAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.list = state.list.filter((s) => s.id !== action.payload);
+        studentAdapter.removeOne(state, action.payload);
       })
       .addCase(deleteStudentAsync.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })
       .addMatcher(
-        (action) => action.type.endsWith("/pending") && action.type.startsWith("students/"),
+        (action) =>
+          action.type.endsWith("/pending") &&
+          action.type.startsWith("students/"),
         (state) => {
           state.status = "loading";
           state.error = null;
-        }
+        },
       )
       .addMatcher(
-        (action) => action.type.endsWith("/rejected") && action.type.startsWith("students/"),
+        (action) =>
+          action.type.endsWith("/rejected") &&
+          action.type.startsWith("students/"),
         (state, action) => {
           state.status = "failed";
           state.error = action.payload;
-        }
+        },
       );
   },
 });
 
+export const {
+  selectAll: selectAllStudents,
+  selectById: selectStudentById,
+  selectTotal: selectStudentCount,
+} = studentAdapter.getSelectors((state) => state.students);
 export const studentReducer = studentSlice.reducer;
-export const { addStudent, deleteStudent, updateStudent } = studentSlice.actions;

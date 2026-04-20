@@ -2,11 +2,18 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectAllStudents,
+  selectStudentById,
+} from "../features/students/studentSlice";
+import {
   selectStudentsStatus,
-  selectStudentsError
+  selectStudentsError,
 } from "../features/students/selectors";
 import EditModal from "./EditModal";
-import { deleteStudentAsync, updateStudentAsync } from '../features/students/studentsThunks';
+import {
+  deleteStudentAsync,
+  updateStudentAsync,
+} from "../features/students/studentsThunks";
+import StudentRow from "./StudentRow";
 
 function StudentTable() {
   const dispatch = useDispatch();
@@ -23,7 +30,9 @@ function StudentTable() {
   };
 
   const handleEditSave = (student) => {
-    dispatch(updateStudentAsync({ ...student, gpa: parseFloat(student.gpa) || 0 }));
+    dispatch(
+      updateStudentAsync({ ...student, gpa: parseFloat(student.gpa) || 0 }),
+    );
     setEditing(null);
   };
 
@@ -35,9 +44,7 @@ function StudentTable() {
     return (
       <div className="error-banner">
         <p>Error: {error}</p>
-        <button onClick={() => dispatch(fetchStudents())}>
-          Retry
-        </button>
+        <button onClick={() => dispatch(fetchStudents())}>Retry</button>
       </div>
     );
   }
@@ -63,27 +70,13 @@ function StudentTable() {
         </thead>
         <tbody>
           {allStudents.map((student, index) => (
-            <tr
+            <StudentRow
               key={student.id}
-              className={student.gpa >= 3.5 ? "high-gpa" : ""}
-            >
-              <td>{index + 1}</td>
-              <td>{student.name}</td>
-              <td>{student.studentId}</td>
-              <td>{student.major}</td>
-              <td className="gpa-cell">{student.gpa.toFixed(2)}</td>
-              <td>
-                <button type="button" onClick={() => setEditing(student)}>
-                  Edit
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDelete(student.id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
+              id={student.id}
+              index={index}
+              setEditing={setEditing}
+              handleDelete={handleDelete}
+            />
           ))}
         </tbody>
       </table>
