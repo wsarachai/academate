@@ -1,16 +1,8 @@
-import { useSelector } from "react-redux";
-import {
-  selectAllStudents,
-  selectStudentById,
-} from "../features/students/studentSlice";
-
-function StudentRow({ id, index, setEditing, handleDelete }) {
-  const student = useSelector((state) => selectStudentById(state, id));
-
+function StudentRow({ student, index, setEditing, handleDelete }) {
   if (!student) return null;
 
   return (
-    <tr key={student.id} className={student.gpa >= 3.5 ? "high-gpa" : ""}>
+    <tr className={student.gpa >= 3.5 ? "high-gpa" : ""}>
       <td>{index + 1}</td>
       <td>{student.name}</td>
       <td>{student.studentId}</td>

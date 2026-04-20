@@ -1,59 +1,52 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import {
-  selectAllStudents,
-  selectStudentById,
-} from "../features/students/studentSlice";
-import {
-  selectStudentsStatus,
-  selectStudentsError,
-} from "../features/students/selectors";
+  useDeleteStudentMutation,
+  useGetStudentsQuery,
+  useUpdateStudentMutation,
+} from "../features/students/studentApi";
 import EditModal from "./EditModal";
-import {
-  deleteStudentAsync,
-  updateStudentAsync,
-} from "../features/students/studentsThunks";
 import StudentRow from "./StudentRow";
 
 function StudentTable() {
-  const dispatch = useDispatch();
-  const allStudents = useSelector(selectAllStudents);
-  const status = useSelector(selectStudentsStatus);
-  const error = useSelector(selectStudentsError);
+  const {
+    data: students = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useGetStudentsQuery();
+  const [deleteStudent] = useDeleteStudentMutation();
+  const [updateStudent] = useUpdateStudentMutation();
 
   const [editing, setEditing] = useState(null);
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this student?")) {
-      dispatch(deleteStudentAsync(id));
+      await deleteStudent(id);
     }
   };
 
-  const handleEditSave = (student) => {
-    dispatch(
-      updateStudentAsync({ ...student, gpa: parseFloat(student.gpa) || 0 }),
-    );
+  const handleEditSave = async (student) => {
+    await updateStudent({ ...student, gpa: parseFloat(student.gpa) || 0 });
     setEditing(null);
   };
 
-  if (status === "loading") {
+  if (isLoading) {
     return <div className="spinner">Loading…</div>;
   }
 
-  if (error) {
+  if (isError) {
     return (
       <div className="error-banner">
-        <p>Error: {error}</p>
-        <button onClick={() => dispatch(fetchStudents())}>Retry</button>
+        <p>Error: {error?.status || "Failed to fetch students"}</p>
+        <button onClick={refetch}>Retry</button>
       </div>
     );
   }
 
-  if (!allStudents || allStudents.length === 0) {
+  if (!students || students.length === 0) {
     return <p>No students found. Add one to the list.</p>;
   }
-
-  if (status !== "succeeded") return null;
 
   return (
     <>
@@ -69,10 +62,10 @@ function StudentTable() {
           </tr>
         </thead>
         <tbody>
-          {allStudents.map((student, index) => (
+          {students.map((student, index) => (
             <StudentRow
               key={student.id}
-              id={student.id}
+              student={student}
               index={index}
               setEditing={setEditing}
               handleDelete={handleDelete}

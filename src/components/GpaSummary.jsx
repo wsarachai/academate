@@ -1,19 +1,15 @@
 import { useSelector } from "react-redux";
 import {
-  selectAllStudents,
-  selectStudentCount,
-} from "../features/students/studentSlice";
-import {
   selectAverageGpa,
   selectHighAchievers,
-  selectGpaDistribution,
 } from "../features/students/selectors";
+import { useGetStudentsQuery } from "../features/students/studentApi";
 
 function GpaSummary() {
-  const count = useSelector(selectStudentCount);
+  const { data: students = [] } = useGetStudentsQuery();
+  const count = students.length;
   const avgGpa = useSelector(selectAverageGpa);
   const highList = useSelector(selectHighAchievers);
-  const gpaDistribution = useSelector(selectGpaDistribution);
 
   return (
     <div className="gpa-summary">
