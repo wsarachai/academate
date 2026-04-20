@@ -1,13 +1,16 @@
 // src/features/students/selectors.js
 import { createSelector } from "@reduxjs/toolkit";
 
+export const selectStudentsStatus = (state) => state.students.status;
+export const selectStudentsError = (state) => state.students.error;
+
 // ── Basic selectors ───────────────────────────────────────
 // Select the full list of students from the store
 export const selectAllStudents = (state) => state.students.list;
 
 // Select total count
 export const selectStudentCount = (state) => {
-  return state.students.list.length
+  return state.students.list.length;
 };
 
 // ── Derived / computed selectors ─────────────────────────
@@ -24,12 +27,6 @@ export const selectStudentById = (id) => (state) =>
   state.students.list.find((s) => s.id === id);
 
 // Count students above a GPA threshold
-export const selectHighAchievers = createSelector(
-  [selectAllStudents],
-  (list) => list.filter((s) => s.gpa >= 3.5),
+export const selectHighAchievers = createSelector([selectAllStudents], (list) =>
+  list.filter((s) => s.gpa >= 3.5),
 );
-
-export const selectStudentsStatus = state => state.students.status;
-
-export const selectStudentsError = state => state.students.error;
-
