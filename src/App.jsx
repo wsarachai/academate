@@ -1,22 +1,21 @@
-import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import GpaSummary from "./components/GpaSummary.jsx";
-import AddStudentForm from "./components/AddStudentForm.jsx";
-import StudentTable from "./components/StudentTable.jsx";
+import Layout from "./components/Layout.jsx";
+import StudentsPage from "./pages/StudentsPage.jsx";
+import CoursesPage from "./pages/CoursesPage.jsx";
+import GradesPage from "./pages/GradesPage.jsx";
 
 function App() {
   return (
-    <div className="app-container">
-      <header className="app-header">
-        <h1>AcadeMate</h1>
-        <p>Student Academic Performance Tracker — Session 2 Redux Migration</p>
-      </header>
-      <main className="app-main">
-        <GpaSummary />
-        <AddStudentForm />
-        <StudentTable />
-      </main>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<StudentsPage />} />
+          <Route path="courses" element={<CoursesPage />} />
+          <Route path="grades" element={<GradesPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
