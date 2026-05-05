@@ -12,9 +12,9 @@ function App() {
         <p>Student Academic Performance Tracker — Session 2 Redux Migration</p>
       </header>
       <main className="app-main">
-        <GpaSummary students={[]} />
-        <AddStudentForm onAddStudent={() => {}} />
-        <StudentTable students={[]} />
+        <GpaSummary />
+        <AddStudentForm />
+        <StudentTable />
       </main>
     </div>
   );

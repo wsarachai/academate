@@ -1,0 +1,404 @@
+/* ===== Layout ===== */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background: linear-gradient(135deg, #1a56db 0%, #6c3fc5 100%);
+  color: #fff;
+  padding: 2rem 2.5rem 1.6rem;
+  box-shadow: 0 4px 18px rgba(26, 86, 219, 0.3);
+}
+
+.app-header h1 {
+  margin: 0 0 0.25rem;
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.app-header p {
+  margin: 0;
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+.app-main {
+  flex: 1;
+  max-width: 1100px;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 0 1.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+/* ===== GPA Summary ===== */
+.summary-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+}
+
+.summary-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.2rem 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+  border-top: 4px solid transparent;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+
+.summary-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.11);
+}
+
+.summary-card--total {
+  border-top-color: #1a56db;
+}
+.summary-card--average {
+  border-top-color: #6c3fc5;
+}
+.summary-card--highest {
+  border-top-color: #38a169;
+}
+.summary-card--lowest {
+  border-top-color: #dd6b20;
+}
+.summary-card--honors {
+  border-top-color: #d69e2e;
+}
+
+.summary-icon {
+  font-size: 2rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.summary-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.summary-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #718096;
+  font-weight: 600;
+}
+
+.summary-value {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #1a202c;
+  line-height: 1.1;
+}
+
+.summary-sub {
+  font-size: 0.72rem;
+  color: #a0aec0;
+  font-weight: 500;
+}
+
+/* GPA progress bar inside Average card */
+.gpa-bar-track {
+  margin-top: 0.4rem;
+  height: 5px;
+  background: #e2e8f0;
+  border-radius: 99px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.gpa-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1a56db, #6c3fc5);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+/* ===== Old stat-card (kept for any other usage) ===== */
+.stat-card {
+  flex: 1;
+  min-width: 130px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.1rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+  border-left: 4px solid #c7d5f5;
+}
+
+.stat-card.highlight {
+  border-left-color: #1a56db;
+  background: #eef3ff;
+}
+.stat-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #718096;
+  font-weight: 600;
+}
+.stat-value {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #1a202c;
+  line-height: 1;
+}
+
+/* ===== Add Student Form ===== */
+.add-form {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.6rem 1.8rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+}
+
+.add-form h3 {
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+  color: #1a56db;
+  font-weight: 700;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: flex-start;
+}
+
+.form-row input {
+  flex: 1;
+  min-width: 140px;
+  padding: 0.6rem 0.85rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  background: #f7fafc;
+  color: #2d3748;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+  outline: none;
+}
+
+.form-row input:focus {
+  border-color: #1a56db;
+  box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.12);
+  background: #fff;
+}
+
+.form-error {
+  display: block;
+  color: #e53e3e;
+  font-size: 0.82rem;
+  margin-bottom: 0.4rem;
+}
+
+/* ===== Buttons ===== */
+.btn-primary {
+  padding: 0.62rem 1.3rem;
+  background: linear-gradient(135deg, #1a56db, #6c3fc5);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    opacity 0.15s,
+    transform 0.1s;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-edit {
+  padding: 0.35rem 0.75rem;
+  background: #ebf4ff;
+  color: #1a56db;
+  border: 1.5px solid #bee3f8;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    transform 0.1s;
+}
+
+.btn-edit:hover {
+  background: #bee3f8;
+  transform: translateY(-1px);
+}
+
+.btn-delete {
+  padding: 0.35rem 0.75rem;
+  background: #fff5f5;
+  color: #c53030;
+  border: 1.5px solid #fed7d7;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    transform 0.1s;
+}
+
+.btn-delete:hover {
+  background: #fed7d7;
+  transform: translateY(-1px);
+}
+
+.btn-save {
+  padding: 0.35rem 0.75rem;
+  background: #f0fff4;
+  color: #276749;
+  border: 1.5px solid #9ae6b4;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-save:hover {
+  background: #9ae6b4;
+}
+
+.btn-cancel {
+  padding: 0.35rem 0.75rem;
+  background: #f7fafc;
+  color: #718096;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-cancel:hover {
+  background: #e2e8f0;
+}
+
+.action-btns {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+/* ===== Student Table ===== */
+.table-wrapper {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.4rem 1.6rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  overflow-x: auto;
+}
+
+.table-wrapper h3 {
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+  color: #1a56db;
+  font-weight: 700;
+}
+
+.student-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.student-table th {
+  background: #eef3ff;
+  color: #1a56db;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 2px solid #c7d5f5;
+}
+
+.student-table th:last-child,
+.student-table td:last-child {
+  text-align: center;
+}
+
+.student-table td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #edf2f7;
+  color: #2d3748;
+  vertical-align: middle;
+}
+
+.student-table tbody tr {
+  transition: background 0.12s;
+}
+
+.student-table tbody tr:hover {
+  background: #f7fafc;
+}
+
+.student-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.student-table tbody tr.high-gpa td {
+  background: #f0fff4;
+}
+
+.student-table tbody tr.high-gpa:hover td {
+  background: #e6ffed;
+}
+
+.gpa-cell {
+  font-weight: 700;
+  color: #1a56db;
+}
+
+.no-students {
+  text-align: center;
+  padding: 2rem;
+  color: #718096;
+  font-style: italic;
+}
+
+/* ===== Inline Edit Inputs ===== */
+.edit-input {
+  width: 100%;
+  padding: 0.3rem 0.5rem;
+  border: 1.5px solid #bee3f8;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  background: #ebf8ff;
+  outline: none;
+  min-width: 80px;
+}
+
+.edit-input:focus {
+  border-color: #1a56db;
+  box-shadow: 0 0 0 2px rgba(26, 86, 219, 0.1);
+}
