@@ -38,8 +38,8 @@ const INITIAL_STUDENTS = [
   },
 ];
 
-const studentSlice = createSlice({
-  name: "student",
+const studentsSlice = createSlice({
+  name: "students",
   initialState: {
     list: INITIAL_STUDENTS,
     status: "idle",
@@ -65,6 +65,6 @@ const studentSlice = createSlice({
   },
 });
 
-export const studentReducer = studentSlice.reducer;
+export const studentsReducer = studentsSlice.reducer;
 export const { addStudent, deleteStudent, updateStudent } =
-  studentSlice.actions;
+  studentsSlice.actions;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addStudent } from "../features/students/studentSlice";
+import { addStudent } from "../features/students/studentsSlice.js";
 
 const EMPTY_FORM = {
   name: "",
@@ -46,7 +46,9 @@ function AddStudentForm({ onAddStudent }) {
     dispatch(
       addStudent({
         id: Date.now(), // Temporary ID — Session 4 uses API-generated IDs
-        ...formData,
+        name: formData.name.trim(),
+        studentId: formData.studentId.trim(),
+        major: formData.major.trim() || "Undeclared",
         gpa: gpaNum,
       }),
     );
