@@ -4,9 +4,10 @@ import {
   deleteCourse,
   updateCourse,
 } from "../features/courses/coursesSlide.js";
+import { selectAllCourses } from "../features/courses/selectors.js";
 
 function CourseTable() {
-  const courses = useSelector((state) => state.courses.list);
+  const courses = useSelector(selectAllCourses);
   const dispatch = useDispatch();
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});

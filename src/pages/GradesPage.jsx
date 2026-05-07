@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addGrade, deleteGrade, updateGrade } from "../features/grades/gradesSlide.js";
+import { selectAllGrades } from "../features/grades/selectors.js";
+import {
+  selectAllCourses,
+  selectCourseDisplayNameMap,
+} from "../features/courses/selectors.js";
 
 const EMPTY_FORM = { studentId: "", courseId: "", score: "", grade: "" };
 
@@ -22,9 +27,10 @@ function scoreToGrade(score) {
 }
 
 function GradesPage() {
-  const grades = useSelector((state) => state.grades.list);
+  const grades = useSelector(selectAllGrades);
   const students = useSelector((state) => state.students.list);
-  const courses = useSelector((state) => state.courses.list);
+  const courses = useSelector(selectAllCourses);
+  const courseDisplayNameMap = useSelector(selectCourseDisplayNameMap);
   const dispatch = useDispatch();
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState(null);
@@ -78,8 +84,7 @@ function GradesPage() {
   }
 
   function getCourseTitle(id) {
-    const c = courses.find((c) => c.id === id);
-    return c ? `${c.code} — ${c.title}` : `#${id}`;
+    return courseDisplayNameMap[id] ?? `#${id}`;
   }
 
   return (
