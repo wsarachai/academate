@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import LoadingOverlay from "./LoadingOverlay.jsx";
 import {
   deleteCourseAsync,
   fetchCourses,
@@ -46,7 +47,12 @@ function CourseTable() {
   }
 
   if (status === "loading") {
-    return <div className="spinner">Loading…</div>;
+    return (
+      <div className="table-wrapper table-wrapper--loading">
+        <h3>Course Catalog</h3>
+        <LoadingOverlay label="Loading courses..." />
+      </div>
+    );
   }
 
   if (error) {

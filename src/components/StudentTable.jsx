@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import EditModal from "./EditModal.jsx";
+import LoadingOverlay from "./LoadingOverlay.jsx";
 import {
   selectAllStudents,
   selectStudentsError,
@@ -46,7 +47,12 @@ function StudentTable() {
   }
 
   if (status === "loading") {
-    return <div className="spinner">Loading…</div>;
+    return (
+      <div className="table-wrapper table-wrapper--loading">
+        <h3>Student Records</h3>
+        <LoadingOverlay label="Loading students..." />
+      </div>
+    );
   }
 
   if (error) {
