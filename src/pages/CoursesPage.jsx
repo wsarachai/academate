@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addCourse } from "../features/courses/coursesSlide.js";
+import {
+  addCourseAsync,
+  fetchCourses,
+} from "../features/courses/coursesThunks.js";
 import CourseTable from "../components/CourseTable.jsx";
 
 const EMPTY_FORM = { code: "", title: "", credits: "", dept: "" };
@@ -8,6 +11,10 @@ const EMPTY_FORM = { code: "", title: "", credits: "", dept: "" };
 function CoursesPage() {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState(EMPTY_FORM);
+
+  useEffect(() => {
+    dispatch(fetchCourses());
+  }, [dispatch]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -18,8 +25,7 @@ function CoursesPage() {
     e.preventDefault();
     if (!formData.code.trim() || !formData.title.trim()) return;
     dispatch(
-      addCourse({
-        id: Date.now(),
+      addCourseAsync({
         code: formData.code.trim(),
         title: formData.title.trim(),
         credits: parseInt(formData.credits) || 3,

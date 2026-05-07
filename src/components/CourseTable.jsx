@@ -1,13 +1,20 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  deleteCourse,
-  updateCourse,
-} from "../features/courses/coursesSlide.js";
-import { selectAllCourses } from "../features/courses/selectors.js";
+  deleteCourseAsync,
+  fetchCourses,
+  updateCourseAsync,
+} from "../features/courses/coursesThunks.js";
+import {
+  selectAllCourses,
+  selectCoursesError,
+  selectCoursesStatus,
+} from "../features/courses/selectors.js";
 
 function CourseTable() {
   const courses = useSelector(selectAllCourses);
+  const status = useSelector(selectCoursesStatus);
+  const error = useSelector(selectCoursesError);
   const dispatch = useDispatch();
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
@@ -24,16 +31,34 @@ function CourseTable() {
 
   function handleSave() {
     dispatch(
-      updateCourse({ ...editData, credits: parseInt(editData.credits) || 3 }),
+      updateCourseAsync({
+        ...editData,
+        credits: parseInt(editData.credits) || 3,
+      }),
     );
     setEditingId(null);
   }
 
   function handleDelete(id) {
     if (window.confirm("Delete this course?")) {
-      dispatch(deleteCourse(id));
+      dispatch(deleteCourseAsync(id));
     }
   }
+
+  if (status === "loading") {
+    return <div className="spinner">Loading…</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="error-banner">
+        <p>Error: {error}</p>
+        <button onClick={() => dispatch(fetchCourses())}>Retry</button>
+      </div>
+    );
+  }
+
+  if (status !== "succeeded" && status !== "idle") return null;
 
   return (
     <div className="table-wrapper">
