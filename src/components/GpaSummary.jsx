@@ -1,41 +1,63 @@
 import { useSelector } from "react-redux";
-import {
-  selectStudentCount,
-  selectAverageGpa,
-  selectHighAchievers,
-} from "../features/students/selectors";
-
 function GpaSummary() {
-  const count = useSelector(selectStudentCount);
-  const avgGpa = useSelector(selectAverageGpa);
-  const highList = useSelector(selectHighAchievers);
+  const students = useSelector((state) => state.students.list);
+
+  if (!students || students.length === 0) return null;
+
+  const average = (
+    students.reduce((sum, student) => sum + student.gpa, 0) / students.length
+  ).toFixed(2);
+  const highest = Math.max(...students.map((s) => s.gpa)).toFixed(2);
+  const lowest = Math.min(...students.map((s) => s.gpa)).toFixed(2);
+
+  const honorCount = students.filter((s) => s.gpa >= 3.5).length;
 
   return (
-    <div className="gpa-summary">
-      <div className="gpa-summary">
-        <div className="stat-card">
-          <span className="stat-label">Students</span>
-          <span className="stat-value">{count}</span>
+    <div className="summary-panel">
+      <div className="summary-card summary-card--total">
+        <div className="summary-icon">🎓</div>
+        <div className="summary-info">
+          <span className="summary-label">Total Students</span>
+          <span className="summary-value">{students.length}</span>
         </div>
-        <div className="stat-card">
-          <span className="stat-label">Average GPA</span>
-          <span className="stat-value">{avgGpa}</span>
+      </div>
+
+      <div className="summary-card summary-card--average">
+        <div className="summary-icon">📊</div>
+        <div className="summary-info">
+          <span className="summary-label">Average GPA</span>
+          <span className="summary-value">{average}</span>
+          <div className="gpa-bar-track">
+            <div
+              className="gpa-bar-fill"
+              style={{ width: `${(average / 4) * 100}%` }}
+            />
+          </div>
         </div>
-        <div className="stat-card highlight">
-          <span className="stat-label">Highest GPA</span>
-          <span className="stat-value">
-            {highList.length > 0
-              ? Math.max(...highList.map((s) => s.gpa)).toFixed(2)
-              : "0.00"}
-          </span>
+      </div>
+
+      <div className="summary-card summary-card--highest">
+        <div className="summary-icon">🏆</div>
+        <div className="summary-info">
+          <span className="summary-label">Highest GPA</span>
+          <span className="summary-value">{highest}</span>
         </div>
-        <div className="stat-card">
-          <span className="stat-label">Lowest GPA</span>
-          <span className="stat-value">
-            {highList.length > 0
-              ? Math.min(...highList.map((s) => s.gpa)).toFixed(2)
-              : "0.00"}
-          </span>
+      </div>
+
+      <div className="summary-card summary-card--lowest">
+        <div className="summary-icon">📉</div>
+        <div className="summary-info">
+          <span className="summary-label">Lowest GPA</span>
+          <span className="summary-value">{lowest}</span>
+        </div>
+      </div>
+
+      <div className="summary-card summary-card--honors">
+        <div className="summary-icon">⭐</div>
+        <div className="summary-info">
+          <span className="summary-label">Honor Roll</span>
+          <span className="summary-value">{honorCount}</span>
+          <span className="summary-sub">GPA ≥ 3.50</span>
         </div>
       </div>
     </div>

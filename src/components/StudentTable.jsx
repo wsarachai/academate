@@ -1,31 +1,49 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import EditModal from "./EditModal.jsx";
 import {
   selectAllStudents,
+  selectStudentsError,
   selectStudentsStatus,
-  selectStudentsError
 } from "../features/students/selectors";
-import EditModal from "./EditModal";
-import { deleteStudentAsync, updateStudentAsync } from '../features/students/studentsThunks';
+import {
+  deleteStudentAsync,
+  fetchStudents,
+  updateStudentAsync,
+} from "../features/students/studentsThunks";
 
 function StudentTable() {
   const dispatch = useDispatch();
-  const allStudents = useSelector(selectAllStudents);
+  const students = useSelector(selectAllStudents);
   const status = useSelector(selectStudentsStatus);
   const error = useSelector(selectStudentsError);
+  const [editingId, setEditingId] = useState(null);
+  const [editData, setEditData] = useState({});
 
-  const [editing, setEditing] = useState(null);
+  function handleEditClick(student) {
+    setEditingId(student.id);
+    setEditData({ ...student });
+  }
 
-  const handleDelete = (id) => {
+  function handleSave(updatedStudent) {
+    const gpaNum = parseFloat(updatedStudent.gpa);
+    if (isNaN(gpaNum) || gpaNum < 0 || gpaNum > 4) return;
+
+    dispatch(updateStudentAsync({ ...updatedStudent, gpa: gpaNum }));
+    setEditingId(null);
+    setEditData({});
+  }
+
+  function handleCancel() {
+    setEditingId(null);
+    setEditData({});
+  }
+
+  function handleDelete(id) {
     if (window.confirm("Are you sure you want to delete this student?")) {
       dispatch(deleteStudentAsync(id));
     }
-  };
-
-  const handleEditSave = (student) => {
-    dispatch(updateStudentAsync({ ...student, gpa: parseFloat(student.gpa) || 0 }));
-    setEditing(null);
-  };
+  }
 
   if (status === "loading") {
     return <div className="spinner">Loading…</div>;
@@ -35,21 +53,25 @@ function StudentTable() {
     return (
       <div className="error-banner">
         <p>Error: {error}</p>
-        <button onClick={() => dispatch(fetchStudents())}>
-          Retry
-        </button>
+        <button onClick={() => dispatch(fetchStudents())}>Retry</button>
       </div>
     );
   }
 
-  if (!allStudents || allStudents.length === 0) {
-    return <p>No students found. Add one to the list.</p>;
+  if (!students || students.length === 0) {
+    return (
+      <div className="table-wrapper">
+        <h3>Student Records</h3>
+        <p className="no-students">No students found. Add one to the list.</p>
+      </div>
+    );
   }
 
   if (status !== "succeeded") return null;
 
   return (
-    <>
+    <div className="table-wrapper">
+      <h3>Student Records</h3>
       <table className="student-table">
         <thead>
           <tr>
@@ -62,7 +84,7 @@ function StudentTable() {
           </tr>
         </thead>
         <tbody>
-          {allStudents.map((student, index) => (
+          {students.map((student, index) => (
             <tr
               key={student.id}
               className={student.gpa >= 3.5 ? "high-gpa" : ""}
@@ -73,28 +95,34 @@ function StudentTable() {
               <td>{student.major}</td>
               <td className="gpa-cell">{student.gpa.toFixed(2)}</td>
               <td>
-                <button type="button" onClick={() => setEditing(student)}>
-                  Edit
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDelete(student.id)}
-                >
-                  Delete
-                </button>
+                <div className="action-btns">
+                  <button
+                    className="btn-edit"
+                    onClick={() => handleEditClick(student)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn-delete"
+                    onClick={() => handleDelete(student.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      {editing && (
+
+      {editingId !== null && (
         <EditModal
-          student={editing}
-          onSave={handleEditSave}
-          onCancel={() => setEditing(null)}
+          student={editData}
+          onSave={handleSave}
+          onCancel={handleCancel}
         />
       )}
-    </>
+    </div>
   );
 }
 

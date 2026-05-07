@@ -1,7 +1,7 @@
 import { createSlice, isPending } from "@reduxjs/toolkit";
 import { fetchStudents, addStudentAsync, updateStudentAsync, deleteStudentAsync } from "./studentsThunks";
 
-const studentSlice = createSlice({
+const studentsSlice = createSlice({
   name: "students",
   initialState: {
     list: [],
@@ -67,5 +67,6 @@ const studentSlice = createSlice({
   },
 });
 
-export const studentReducer = studentSlice.reducer;
-export const { addStudent, deleteStudent, updateStudent } = studentSlice.actions;
+export const studentsReducer = studentsSlice.reducer;
+export const { addStudent, deleteStudent, updateStudent } =
+  studentsSlice.actions;
