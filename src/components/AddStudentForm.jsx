@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useAddStudentMutation } from "../features/students/studentApi";
+import { useDispatch } from "react-redux";
+import { addStudentAsync } from "../features/students/studentsThunks";
 
 const EMPTY_FORM = {
   name: "",
@@ -8,8 +9,8 @@ const EMPTY_FORM = {
   gpa: "",
 };
 
-function AddStudentForm() {
-  const [addStudent] = useAddStudentMutation();
+function AddStudentForm({ onAddStudent }) {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
 
@@ -42,7 +43,14 @@ function AddStudentForm() {
       return;
     }
 
-    addStudent({ ...formData, gpa: gpaNum });
+    dispatch(
+      addStudentAsync({
+        name: formData.name.trim(),
+        studentId: formData.studentId.trim(),
+        major: formData.major.trim() || "Undeclared",
+        gpa: gpaNum,
+      }),
+    );
     setFormData(EMPTY_FORM);
     setErrors({});
   }

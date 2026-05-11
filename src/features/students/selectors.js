@@ -1,25 +1,27 @@
+// src/features/students/selectors.js
 import { createSelector } from "@reduxjs/toolkit";
-import { studentApi } from "./studentApi";
+import { selectAllStudents } from "./studentsSlice";
 
-const selectStudentsResult = studentApi.endpoints.getStudents.select();
+export const selectStudentsStatus = (state) => state.students.status;
+export const selectStudentsError = (state) => state.students.error;
 
-const selectStudentsData = createSelector(
-  selectStudentsResult,
-  (result) => result.data ?? [],
+export const selectAverageGpa = createSelector(
+  selectAllStudents,
+  (students) => {
+    if (students.length === 0) return "—";
+    return (
+      students.reduce((acc, s) => acc + s.gpa, 0) / students.length
+    ).toFixed(2);
+  },
 );
 
-export const selectAverageGpa = createSelector(selectStudentsData, (students) => {
-  if (students.length === 0) return "—";
-  return (students.reduce((acc, s) => acc + s.gpa, 0) / students.length).toFixed(2);
-});
-
 export const selectHighAchievers = createSelector(
-  selectStudentsData,
+  selectAllStudents,
   (students) => students.filter((s) => s.gpa >= 3.5),
 );
 
 export const selectGpaDistribution = createSelector(
-  selectStudentsData,
+  selectAllStudents,
   (students) => ({
     high: students.filter((s) => s.gpa >= 3.5).length,
     medium: students.filter((s) => s.gpa >= 2.5 && s.gpa < 3.5).length,
