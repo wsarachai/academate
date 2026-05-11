@@ -16,7 +16,7 @@ const initialState = studentAdapter.getInitialState({
   error: null,
 });
 
-const studentSlice = createSlice({
+const studentsSlice = createSlice({
   name: "students",
   initialState: initialState,
   reducers: {},
@@ -84,4 +84,4 @@ export const {
   selectById: selectStudentById,
   selectTotal: selectStudentCount,
 } = studentAdapter.getSelectors((state) => state.students);
-export const studentReducer = studentSlice.reducer;
+export const studentsReducer = studentsSlice.reducer;

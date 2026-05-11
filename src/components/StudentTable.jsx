@@ -1,43 +1,58 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import EditModal from "./EditModal.jsx";
+import LoadingOverlay from "./LoadingOverlay.jsx";
 import {
-  selectAllStudents,
-  selectStudentById,
-} from "../features/students/studentSlice";
-import {
-  selectStudentsStatus,
   selectStudentsError,
+  selectStudentsStatus,
 } from "../features/students/selectors";
-import EditModal from "./EditModal";
+import { selectAllStudents } from "../features/students/studentsSlice";
 import {
   deleteStudentAsync,
+  fetchStudents,
   updateStudentAsync,
 } from "../features/students/studentsThunks";
-import StudentRow from "./StudentRow";
 
 function StudentTable() {
   const dispatch = useDispatch();
-  const allStudents = useSelector(selectAllStudents);
+  const students = useSelector(selectAllStudents);
   const status = useSelector(selectStudentsStatus);
   const error = useSelector(selectStudentsError);
+  const [editingId, setEditingId] = useState(null);
+  const [editData, setEditData] = useState({});
 
-  const [editing, setEditing] = useState(null);
+  function handleEditClick(student) {
+    setEditingId(student.id);
+    setEditData({ ...student });
+  }
 
-  const handleDelete = (id) => {
+  function handleSave(updatedStudent) {
+    const gpaNum = parseFloat(updatedStudent.gpa);
+    if (isNaN(gpaNum) || gpaNum < 0 || gpaNum > 4) return;
+
+    dispatch(updateStudentAsync({ ...updatedStudent, gpa: gpaNum }));
+    setEditingId(null);
+    setEditData({});
+  }
+
+  function handleCancel() {
+    setEditingId(null);
+    setEditData({});
+  }
+
+  function handleDelete(id) {
     if (window.confirm("Are you sure you want to delete this student?")) {
       dispatch(deleteStudentAsync(id));
     }
-  };
-
-  const handleEditSave = (student) => {
-    dispatch(
-      updateStudentAsync({ ...student, gpa: parseFloat(student.gpa) || 0 }),
-    );
-    setEditing(null);
-  };
+  }
 
   if (status === "loading") {
-    return <div className="spinner">Loading…</div>;
+    return (
+      <div className="table-wrapper table-wrapper--loading">
+        <h3>Student Records</h3>
+        <LoadingOverlay label="Loading students..." />
+      </div>
+    );
   }
 
   if (error) {
@@ -49,14 +64,20 @@ function StudentTable() {
     );
   }
 
-  if (!allStudents || allStudents.length === 0) {
-    return <p>No students found. Add one to the list.</p>;
+  if (!students || students.length === 0) {
+    return (
+      <div className="table-wrapper">
+        <h3>Student Records</h3>
+        <p className="no-students">No students found. Add one to the list.</p>
+      </div>
+    );
   }
 
   if (status !== "succeeded") return null;
 
   return (
-    <>
+    <div className="table-wrapper">
+      <h3>Student Records</h3>
       <table className="student-table">
         <thead>
           <tr>
@@ -69,25 +90,45 @@ function StudentTable() {
           </tr>
         </thead>
         <tbody>
-          {allStudents.map((student, index) => (
-            <StudentRow
+          {students.map((student, index) => (
+            <tr
               key={student.id}
-              id={student.id}
-              index={index}
-              setEditing={setEditing}
-              handleDelete={handleDelete}
-            />
+              className={student.gpa >= 3.5 ? "high-gpa" : ""}
+            >
+              <td>{index + 1}</td>
+              <td>{student.name}</td>
+              <td>{student.studentId}</td>
+              <td>{student.major}</td>
+              <td className="gpa-cell">{student.gpa.toFixed(2)}</td>
+              <td>
+                <div className="action-btns">
+                  <button
+                    className="btn-edit"
+                    onClick={() => handleEditClick(student)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn-delete"
+                    onClick={() => handleDelete(student.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
           ))}
         </tbody>
       </table>
-      {editing && (
+
+      {editingId !== null && (
         <EditModal
-          student={editing}
-          onSave={handleEditSave}
-          onCancel={() => setEditing(null)}
+          student={editData}
+          onSave={handleSave}
+          onCancel={handleCancel}
         />
       )}
-    </>
+    </div>
   );
 }
 

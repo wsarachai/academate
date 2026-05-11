@@ -1,6 +1,6 @@
 // src/features/students/selectors.js
 import { createSelector } from "@reduxjs/toolkit";
-import { selectAllStudents } from "./studentSlice";
+import { selectAllStudents } from "./studentsSlice";
 
 export const selectStudentsStatus = (state) => state.students.status;
 export const selectStudentsError = (state) => state.students.error;

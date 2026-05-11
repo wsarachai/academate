@@ -1,8 +1,5 @@
 import { useSelector } from "react-redux";
-import {
-  selectAllStudents,
-  selectStudentById,
-} from "../features/students/studentSlice";
+import { selectStudentById } from "../features/students/studentsSlice";
 
 function StudentRow({ id, index, setEditing, handleDelete }) {
   const student = useSelector((state) => selectStudentById(state, id));

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addStudentAsync } from '../features/students/studentsThunks';
-
+import { addStudentAsync } from "../features/students/studentsThunks";
 
 const EMPTY_FORM = {
   name: "",
@@ -46,7 +45,9 @@ function AddStudentForm({ onAddStudent }) {
 
     dispatch(
       addStudentAsync({
-        ...formData,
+        name: formData.name.trim(),
+        studentId: formData.studentId.trim(),
+        major: formData.major.trim() || "Undeclared",
         gpa: gpaNum,
       }),
     );
