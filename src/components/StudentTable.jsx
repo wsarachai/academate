@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingOverlay from "./LoadingOverlay.jsx";
+import StudentRow from "./StudentRow.jsx";
 import {
   selectStudentsError,
   selectStudentsStatus,
@@ -94,86 +95,20 @@ function StudentTable() {
           </tr>
         </thead>
         <tbody>
-          {students.map((student, index) =>
-            editingId === student.id ? (
-              <tr key={student.id} className="high-gpa">
-                <td>{index + 1}</td>
-                <td>
-                  <input
-                    className="edit-input"
-                    name="name"
-                    value={editData.name ?? ""}
-                    onChange={handleEditChange}
-                  />
-                </td>
-                <td>
-                  <input
-                    className="edit-input"
-                    name="studentId"
-                    value={editData.studentId ?? ""}
-                    onChange={handleEditChange}
-                  />
-                </td>
-                <td>
-                  <input
-                    className="edit-input"
-                    name="major"
-                    value={editData.major ?? ""}
-                    onChange={handleEditChange}
-                  />
-                </td>
-                <td>
-                  <input
-                    className="edit-input"
-                    name="gpa"
-                    type="number"
-                    min="0"
-                    max="4"
-                    step="0.01"
-                    value={editData.gpa ?? ""}
-                    onChange={handleEditChange}
-                  />
-                </td>
-                <td>
-                  <div className="action-btns">
-                    <button className="btn-save" onClick={handleSave}>
-                      Save
-                    </button>
-                    <button className="btn-cancel" onClick={handleCancel}>
-                      Cancel
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ) : (
-              <tr
-                key={student.id}
-                className={student.gpa >= 3.5 ? "high-gpa" : ""}
-              >
-                <td>{index + 1}</td>
-                <td>{student.name}</td>
-                <td>{student.studentId}</td>
-                <td>{student.major}</td>
-                <td className="gpa-cell">{student.gpa.toFixed(2)}</td>
-                <td>
-                  <div className="action-btns">
-                    <button
-                      className="btn-edit"
-                      onClick={() => handleEditClick(student)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="btn-delete"
-                      onClick={() => handleDelete(student.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ),
-          )}
+          {students.map((student, index) => (
+            <StudentRow
+              key={student.id}
+              id={student.id}
+              index={index}
+              editingId={editingId}
+              editData={editData}
+              onEditClick={handleEditClick}
+              onEditChange={handleEditChange}
+              onSave={handleSave}
+              onCancel={handleCancel}
+              onDelete={handleDelete}
+            />
+          ))}
         </tbody>
       </table>
     </div>
