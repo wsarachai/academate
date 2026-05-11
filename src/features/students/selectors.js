@@ -1,30 +1,57 @@
-// src/features/students/selectors.js
 import { createSelector } from "@reduxjs/toolkit";
-import { selectAllStudents } from "./studentsSlice";
+import { studentApi } from "./studentApi";
+const selectStudentsResult = studentApi.endpoints.getStudents.select();
+const selectStudentsData = createSelector(
+  selectStudentsResult,
+  (studentsResult) => studentsResult.data ?? [],
+);
 
-export const selectStudentsStatus = (state) => state.students.status;
-export const selectStudentsError = (state) => state.students.error;
-
-export const selectAverageGpa = createSelector(
-  selectAllStudents,
+export const selectAverageGPA = createSelector(
+  selectStudentsData,
   (students) => {
-    if (students.length === 0) return "—";
-    return (
-      students.reduce((acc, s) => acc + s.gpa, 0) / students.length
-    ).toFixed(2);
+    if (students.length === 0) return 0;
+    const totalGPA = students.reduce((sum, student) => sum + student.gpa, 0);
+    return (totalGPA / students.length).toFixed(2);
   },
 );
 
-export const selectHighAchievers = createSelector(
-  selectAllStudents,
-  (students) => students.filter((s) => s.gpa >= 3.5),
+export const selectHighGPAStudents = createSelector(
+  selectStudentsData,
+  (students) => students.filter((student) => student.gpa >= 3.5),
 );
 
-export const selectGpaDistribution = createSelector(
-  selectAllStudents,
-  (students) => ({
-    high: students.filter((s) => s.gpa >= 3.5).length,
-    medium: students.filter((s) => s.gpa >= 2.5 && s.gpa < 3.5).length,
-    low: students.filter((s) => s.gpa < 2.5).length,
-  }),
+export const selectGPADistribution = createSelector(
+  selectStudentsData,
+  (students) => {
+    if (students.length === 0) {
+      return {
+        high: 0,
+        medium: 0,
+        low: 0,
+      };
+    }
+
+    return {
+      high: students.filter((student) => student.gpa >= 3.5).length,
+      medium: students.filter(
+        (student) => student.gpa >= 2.5 && student.gpa < 3.5,
+      ).length,
+      low: students.filter((student) => student.gpa < 2.5).length,
+    };
+  },
 );
+
+export const selectStudentCount = createSelector(
+  selectStudentsData,
+  (students) => students.length,
+);
+
+export const selectMaxGPA = createSelector(selectStudentsData, (students) => {
+  if (students.length === 0) return 0;
+  return Math.max(...students.map((s) => s.gpa)).toFixed(2);
+});
+
+export const selectMinGPA = createSelector(selectStudentsData, (students) => {
+  if (students.length === 0) return 0;
+  return Math.min(...students.map((s) => s.gpa)).toFixed(2);
+});

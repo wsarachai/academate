@@ -1,27 +1,25 @@
 import { useSelector } from "react-redux";
+import { useGetStudentsQuery } from "../features/students/studentApi";
 import {
-  selectAllStudents,
+  selectAverageGPA,
+  selectHighGPAStudents,
+  selectGPADistribution,
   selectStudentCount,
-} from "../features/students/studentsSlice";
-import {
-  selectAverageGpa,
-  selectHighAchievers,
-  selectGpaDistribution,
+  selectMaxGPA,
+  selectMinGPA,
 } from "../features/students/selectors";
 
 function GpaSummary() {
-  const students = useSelector(selectAllStudents);
+  useGetStudentsQuery();
   const count = useSelector(selectStudentCount);
-  const avgGpa = useSelector(selectAverageGpa);
-  const highList = useSelector(selectHighAchievers);
-  const gpaDistribution = useSelector(selectGpaDistribution);
+  const avgGpa = useSelector(selectAverageGPA);
+  const highList = useSelector(selectHighGPAStudents);
+  const gpaDistribution = useSelector(selectGPADistribution);
+  const maxGpa = useSelector(selectMaxGPA);
+  const minGpa = useSelector(selectMinGPA);
 
-  if (!students || students.length === 0) return null;
+  if (count === 0) return null;
 
-  const average = avgGpa === "—" ? "0.00" : avgGpa;
-  const averageNum = Number.parseFloat(average) || 0;
-  const highest = Math.max(...students.map((s) => s.gpa)).toFixed(2);
-  const lowest = Math.min(...students.map((s) => s.gpa)).toFixed(2);
   const honorCount = highList.length;
 
   return (
@@ -38,11 +36,11 @@ function GpaSummary() {
         <div className="summary-icon">📊</div>
         <div className="summary-info">
           <span className="summary-label">Average GPA</span>
-          <span className="summary-value">{average}</span>
+          <span className="summary-value">{avgGpa}</span>
           <div className="gpa-bar-track">
             <div
               className="gpa-bar-fill"
-              style={{ width: `${(averageNum / 4) * 100}%` }}
+              style={{ width: `${(parseFloat(avgGpa) / 4) * 100}%` }}
             />
           </div>
         </div>
@@ -52,7 +50,7 @@ function GpaSummary() {
         <div className="summary-icon">🏆</div>
         <div className="summary-info">
           <span className="summary-label">Highest GPA</span>
-          <span className="summary-value">{highest}</span>
+          <span className="summary-value">{maxGpa}</span>
         </div>
       </div>
 
@@ -60,7 +58,7 @@ function GpaSummary() {
         <div className="summary-icon">📉</div>
         <div className="summary-info">
           <span className="summary-label">Lowest GPA</span>
-          <span className="summary-value">{lowest}</span>
+          <span className="summary-value">{minGpa}</span>
         </div>
       </div>
 

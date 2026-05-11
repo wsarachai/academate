@@ -1,23 +1,16 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {
+  useGetStudentsQuery,
+  useDeleteStudentMutation,
+  useUpdateStudentMutation,
+} from "../features/students/studentApi";
 import LoadingOverlay from "./LoadingOverlay.jsx";
 import StudentRow from "./StudentRow.jsx";
-import {
-  selectStudentsError,
-  selectStudentsStatus,
-} from "../features/students/selectors";
-import { selectAllStudents } from "../features/students/studentsSlice";
-import {
-  deleteStudentAsync,
-  fetchStudents,
-  updateStudentAsync,
-} from "../features/students/studentsThunks";
 
 function StudentTable() {
-  const dispatch = useDispatch();
-  const students = useSelector(selectAllStudents);
-  const status = useSelector(selectStudentsStatus);
-  const error = useSelector(selectStudentsError);
+  const { data: students = [], isLoading, error, refetch } = useGetStudentsQuery();
+  const [deleteStudent] = useDeleteStudentMutation();
+  const [updateStudent] = useUpdateStudentMutation();
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
 
@@ -31,11 +24,10 @@ function StudentTable() {
     setEditData((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleSave() {
+  async function handleSave() {
     const gpaNum = parseFloat(editData.gpa);
     if (isNaN(gpaNum) || gpaNum < 0 || gpaNum > 4) return;
-
-    dispatch(updateStudentAsync({ ...editData, gpa: gpaNum }));
+    await updateStudent({ ...editData, gpa: gpaNum });
     setEditingId(null);
     setEditData({});
   }
@@ -45,13 +37,13 @@ function StudentTable() {
     setEditData({});
   }
 
-  function handleDelete(id) {
+  async function handleDelete(id) {
     if (window.confirm("Are you sure you want to delete this student?")) {
-      dispatch(deleteStudentAsync(id));
+      await deleteStudent(id);
     }
   }
 
-  if (status === "loading") {
+  if (isLoading) {
     return (
       <div className="table-wrapper table-wrapper--loading">
         <h3>Student Records</h3>
@@ -63,8 +55,8 @@ function StudentTable() {
   if (error) {
     return (
       <div className="error-banner">
-        <p>Error: {error}</p>
-        <button onClick={() => dispatch(fetchStudents())}>Retry</button>
+        <p>Error: {error?.data?.message || "Failed to fetch students"}</p>
+        <button onClick={() => refetch()}>Retry</button>
       </div>
     );
   }
@@ -77,8 +69,6 @@ function StudentTable() {
       </div>
     );
   }
-
-  if (status !== "succeeded") return null;
 
   return (
     <div className="table-wrapper">

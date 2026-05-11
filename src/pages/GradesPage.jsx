@@ -10,7 +10,7 @@ import {
   selectAllCourses,
   selectCourseDisplayNameMap,
 } from "../features/courses/selectors.js";
-import { selectAllStudents } from "../features/students/studentsSlice";
+import { useGetStudentsQuery } from "../features/students/studentApi";
 
 const EMPTY_FORM = { studentId: "", courseId: "", score: "", grade: "" };
 
@@ -32,8 +32,8 @@ function scoreToGrade(score) {
 }
 
 function GradesPage() {
+  const { data: students = [] } = useGetStudentsQuery();
   const grades = useSelector(selectAllGrades);
-  const students = useSelector(selectAllStudents);
   const courses = useSelector(selectAllCourses);
   const courseDisplayNameMap = useSelector(selectCourseDisplayNameMap);
   const dispatch = useDispatch();

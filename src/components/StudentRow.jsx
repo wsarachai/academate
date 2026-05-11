@@ -1,5 +1,4 @@
-import { useSelector } from "react-redux";
-import { selectStudentById } from "../features/students/studentsSlice";
+import { useGetStudentByIdQuery } from "../features/students/studentApi";
 
 function StudentRow({
   id,
@@ -12,7 +11,7 @@ function StudentRow({
   onCancel,
   onDelete,
 }) {
-  const student = useSelector((state) => selectStudentById(state, id));
+  const { data: student } = useGetStudentByIdQuery(id);
   const isEditing = editingId === id;
 
   if (!student) return null;
